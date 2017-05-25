@@ -26,30 +26,20 @@ public class TodoDao {
 		this.jdbc = new NamedParameterJdbcTemplate(dataSource);
 		this.insertAction = new SimpleJdbcInsert(dataSource)
 				.withTableName("todo")
+				.usingColumns("todo", "completed")
 				.usingGeneratedKeyColumns("id");
 	}
-	
-	private static final String COUNT_TODO = "SELECT COUNT(*) FROM todo";
-	private static final String SELECT_BY_ID = "SELECT id, todo, completed, date FROM todo where id = :id";
-	private static final String SELECT_ALL = "SELECT id, todo, completed, date FROM todo";
-	static final String DELETE_BY_ID = "DELETE FROM todo WHERE id= :id";
-	private static final String UPDATE =
-			"UPDATE todo SET\n"
-			+ "todo = :todo,"
-			+ "completed = :completed,"
-			+ "date = :date\n"
-			+ "WHERE id = :id";
 
 	private RowMapper<Todo> rowMapper = BeanPropertyRowMapper.newInstance(Todo.class);
 	
 	public int update(Todo todo) {
 		SqlParameterSource params = new BeanPropertySqlParameterSource(todo);
-		return jdbc.update(UPDATE, params);
+		return jdbc.update(TodoSqls.UPDATE, params);
 	}
 	
 	public int countTodos() {
 		Map<String, Object> params = Collections.emptyMap();
-		return jdbc.queryForObject(COUNT_TODO, params, Integer.class);
+		return jdbc.queryForObject(TodoSqls.COUNT_TODO, params, Integer.class);
 	}
 	
 	public Todo selectById(Integer id) {
@@ -57,12 +47,12 @@ public class TodoDao {
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", id);
-		return jdbc.queryForObject(SELECT_BY_ID, params, rowMapper);
+		return jdbc.queryForObject(TodoSqls.SELECT_BY_ID, params, rowMapper);
 	}
 
 	public List<Todo> selectAll() {
 		Map<String, Object> params = Collections.emptyMap();
-		return jdbc.query(SELECT_ALL, params, rowMapper);
+		return jdbc.query(TodoSqls.SELECT_ALL, params, rowMapper);
 	}
 	
 	public Integer insert(Todo Todo) {
@@ -72,6 +62,6 @@ public class TodoDao {
 	
 	public int deleteById(Integer id) {
 		Map<String, ?> params = Collections.singletonMap("id", id);
-		return jdbc.update(DELETE_BY_ID, params);
+		return jdbc.update(TodoSqls.DELETE_BY_ID, params);
 	}
 }

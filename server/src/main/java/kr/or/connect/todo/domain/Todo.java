@@ -14,6 +14,7 @@ public class Todo {
 	public Todo(Integer id, String todo, Integer completed, Date date) {
 		this(todo, completed, date);
 		this.id = id;
+		this.date = date;
 	}
 	
 	public Todo(String todo, Integer completed, Date date) {

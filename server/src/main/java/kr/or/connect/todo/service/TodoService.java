@@ -14,7 +14,6 @@ import kr.or.connect.todo.persistence.TodoDao;
 @Service
 public class TodoService {
 	private TodoDao dao;
-	private Date d = new Date();
 	
 	public TodoService(TodoDao dao) {
 		this.dao = dao;
