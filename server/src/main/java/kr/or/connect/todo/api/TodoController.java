@@ -2,6 +2,8 @@ package kr.or.connect.todo.api;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,7 @@ import kr.or.connect.todo.service.TodoService;
 @RequestMapping("/api/todos")
 public class TodoController {
 	private final TodoService service;
+	private final Logger log = LoggerFactory.getLogger(TodoController.class);
 	
 	@Autowired
 	public TodoController(TodoService service) {
@@ -35,7 +38,9 @@ public class TodoController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	Todo create(@RequestBody Todo todo) {
-		return service.create(todo);
+		Todo newTodo = service.create(todo);
+		log.info("todo created : {}", newTodo);
+		return todo;
 	}
 	
 	@PutMapping("/{id}")

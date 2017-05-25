@@ -14,8 +14,6 @@ import kr.or.connect.todo.persistence.TodoDao;
 @Service
 public class TodoService {
 	private TodoDao dao;
-	private ConcurrentMap<Integer, Todo> repo = new ConcurrentHashMap<>();
-	private AtomicInteger maxId = new AtomicInteger(0);
 	private Date d = new Date();
 	
 	public TodoService(TodoDao dao) {
@@ -23,23 +21,22 @@ public class TodoService {
 	}
 	
 	public Collection<Todo> findAll() {
-		return repo.values();
+		return dao.selectAll();
 	}
 	
 	public Todo create(Todo todo) {
-		Integer id = maxId.addAndGet(1);
+		Integer id = dao.insert(todo);
 		todo.setId(id);
-		repo.put(id, todo);
 		return todo;
 	}
 	
 	public boolean update(Todo todo) {
-		Todo old = repo.put(todo.getId(), todo);
-		return old != null;
+		int affected = dao.update(todo);
+		return affected == 1;
 	}
 	
 	public boolean delete(Integer id) {
-		Todo old = repo.remove(id);
-		return old != null;
+		int affected = dao.deleteById(id);
+		return affected == 1;
 	}
 }
