@@ -28,11 +28,10 @@
 		})
 	});
 
-	
 	$('.todo-list').on('click', '.toggle', function() {
 		var updateId = $(this).parent().parent().data('id');
-		var parent = $(this).parent().parent()
-		console.log("updateId : " + updateId);
+		var parent = $(this).parent().parent();
+		
 		if(this.checked) {
 			var flag = 1;
 		} else {
@@ -56,6 +55,28 @@
 					$(parent).removeClass("completed");
 					$('.todo-count > strong').text(count + 1);
 				}
+			}
+		})
+	});
+
+	$('.todo-list').on('click', '.destroy', function() {
+		var deleteId = $(this).parent().parent().data('id');
+		var parent = $(this).parent().parent();
+
+		console.log($(parent).attr('class'));
+		$.ajax({
+			url: './api/todos/' + deleteId,
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			dataType: 'json',
+			success: function(data) {
+				if($(parent).attr('class') != 'completed') {
+					var count = parseInt($('.todo-count > strong').text());
+					$('.todo-count > strong').text(count - 1);
+				}
+				$(parent).remove();
 			}
 		})
 	});
