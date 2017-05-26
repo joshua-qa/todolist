@@ -28,6 +28,41 @@
 		})
 	});
 
+	$('.new-todo').keypress(function(e) {
+		if(e.keyCode == 13) {
+			$(this).trigger('enterKey');
+		}
+	});
+	$('.new-todo').bind('enterKey', function(e) {
+		var text = $.trim($(this).val());
+		if(text == "") {
+			alert("내용을 입력해 주세요.");
+		} else {
+			$.ajax({
+				url: './api/todos/',
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				data: JSON.stringify({
+					todo: text,
+					completed: 0
+				}),
+				dataType: 'json',
+				success: function(data) {
+					var item = '';
+					var count = parseInt($('.todo-count > strong').text());
+					$('.todo-count > strong').text(count + 1);
+					
+					item = "<li data-id=" + data.id + ">" + "<div class='view'><input class='toggle' type='checkbox'>\
+								<label>" + data.todo + "</label><button class='destroy'></button></div></li>";
+					$(item).insertBefore($('.todo-list').children().first());
+					$('.new-todo').val("");
+				}
+			})
+		}
+	});
+
 	$('.todo-list').on('click', '.toggle', function() {
 		var updateId = $(this).parent().parent().data('id');
 		var parent = $(this).parent().parent();
