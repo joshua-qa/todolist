@@ -27,6 +27,11 @@
 				}
 				$('.todo-list').html(items);
 				$('.todo-count > strong').text(itemLeftCount);
+			},
+			error: function() {
+				$('.new-todo').attr('disabled', 'disabled');
+				alert('오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
+				$('.main').html('<ul class="todo-list"><li><div class="view"><label>Loading Failed</label></div></li></ul>');
 			}
 		})
 	}
@@ -55,6 +60,11 @@
 								<label>" + data[i].todo + "</label><button class='destroy'></button></div></li>");
 				}
 				$('.todo-list').html(items);
+			},
+			error: function() {
+				$('.new-todo').attr('disabled', 'disabled');
+				alert('오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
+				$('.main').html('<ul class="todo-list"><li><div class="view"><label>Loading Failed</label></div></li></ul>');
 			}
 		})
 	}
@@ -116,6 +126,9 @@
 						}
 					}
 					$('.new-todo').val("");
+				},
+				error: function() {
+					alert('등록을 실패했습니다. 잠시 후 다시 시도해 주세요.');
 				}
 			})
 		}
@@ -156,6 +169,9 @@
 					}
 					$('.todo-count > strong').text(count + 1);
 				}
+			},
+			error: function() {
+				alert('오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
 			}
 		})
 	});
@@ -164,7 +180,6 @@
 		var deleteId = $(this).parent().parent().data('id');
 		var parent = $(this).parent().parent();
 
-		console.log($(parent).attr('class'));
 		$.ajax({
 			url: './api/todos/' + deleteId,
 			method: 'DELETE',
@@ -178,6 +193,9 @@
 					$('.todo-count > strong').text(count - 1);
 				}
 				$(parent).remove();
+			},
+			error: function() {
+				alert('오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
 			}
 		})
 	});
@@ -192,6 +210,9 @@
 			dataType: 'json',
 			success: function(data) {
 				$('.todo-list > li.completed').remove();
+			},
+			error: function() {
+				alert('오류가 발생하였습니다. 잠시 후 다시 시도해 주세요.');
 			}
 		})
 	});
