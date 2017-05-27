@@ -2,6 +2,10 @@
 	'use strict';
 
 	$(document).ready(function() {
+		all();
+	});
+
+	function all() {
 		$.ajax({
 			url: './api/todos',
 			method: 'GET',
@@ -9,7 +13,6 @@
 			success: function(data) {
 				var items = [];
 				var itemLeftCount = 0;
-				console.log(data);
 				for(var i = 0; i < data.length; i++) {
 					var className = '';
 					var inputChecked = '';
@@ -26,6 +29,52 @@
 				$('.todo-count > strong').text(itemLeftCount);
 			}
 		})
+	}
+
+	function filter(id) {
+		var urlParam = '';
+		if(id == 0) {
+			urlParam = '/active';
+		} else if(id == 1) {
+			urlParam = '/completed';
+		}
+		$.ajax({
+			url: './api/todos' + urlParam,
+			method: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				var items = [];
+				for(var i = 0; i < data.length; i++) {
+					var className = '';
+					var inputChecked = '';
+					if(data[i].completed == 1) {
+						className = ' class="completed"';
+						inputChecked = ' checked';
+					}
+					items.push("<li" + className + " data-id=" + data[i].id + ">" + "<div class='view'><input class='toggle' type='checkbox'" + inputChecked + ">\
+								<label>" + data[i].todo + "</label><button class='destroy'></button></div></li>");
+				}
+				$('.todo-list').html(items);
+			}
+		})
+	}
+
+	$('#btnAll').click(function() {
+		$('.filters > li > a.selected').removeClass();
+		$('#btnAll').attr('class', 'selected');
+		all();
+	});
+
+	$('#btnActive').click(function() {
+		$('.filters > li > a.selected').removeClass();
+		$('#btnActive').attr('class', 'selected');
+		filter(0);
+	});
+
+	$('#btnCompleted').click(function() {
+		$('.filters > li > a.selected').removeClass();
+		$('#btnCompleted').attr('class', 'selected');
+		filter(1);
 	});
 
 	$('.new-todo').keypress(function(e) {
@@ -56,7 +105,11 @@
 					
 					item = "<li data-id=" + data.id + ">" + "<div class='view'><input class='toggle' type='checkbox'>\
 								<label>" + data.todo + "</label><button class='destroy'></button></div></li>";
-					$(item).insertBefore($('.todo-list').children().first());
+					if($('.todo-list').children().length == 0) {
+						$('.todo-list').append(item);
+					} else {
+						$(item).insertBefore($('.todo-list').children().first());
+					}
 					$('.new-todo').val("");
 				}
 			})
@@ -84,10 +137,18 @@
 			success: function(data) {
 				var count = parseInt($('.todo-count > strong').text());
 				if(flag == 1) {
-					$(parent).addClass("completed");
+					if($('#btnActive').attr('class') == 'selected') {
+						$(parent).remove();
+					} else {
+						$(parent).addClass("completed");
+					}
 					$('.todo-count > strong').text(count - 1);
 				} else {
-					$(parent).removeClass("completed");
+					if($('#btnCompleted').attr('class') == 'selected') {
+						$(parent).remove();
+					} else {
+						$(parent).removeClass("completed");
+					}
 					$('.todo-count > strong').text(count + 1);
 				}
 			}
@@ -112,6 +173,20 @@
 					$('.todo-count > strong').text(count - 1);
 				}
 				$(parent).remove();
+			}
+		})
+	});
+
+	$('.clear-completed').click(function() {
+		$.ajax({
+			url: './api/todos/',
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			dataType: 'json',
+			success: function(data) {
+				$('.todo-list > li.completed').remove();
 			}
 		})
 	});

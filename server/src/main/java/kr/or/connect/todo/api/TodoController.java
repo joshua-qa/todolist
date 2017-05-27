@@ -35,6 +35,16 @@ public class TodoController {
 		return service.findAll();
 	}
 	
+	@GetMapping("/active")
+	Collection<Todo> viewByActive() {
+		return service.findByCompleted(0);
+	}
+	
+	@GetMapping("/completed")
+	Collection<Todo> viewByCompleted() {
+		return service.findByCompleted(1);
+	}
+	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	Todo create(@RequestBody Todo todo) {
@@ -54,6 +64,12 @@ public class TodoController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void delete(@PathVariable Integer id) {
 		service.delete(id);
+	}
+	
+	@DeleteMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	void deleteByCompleted() {
+		service.deleteByCompleted();
 	}
 
 }
