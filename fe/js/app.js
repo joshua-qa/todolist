@@ -106,13 +106,14 @@
 					var item = '';
 					var count = parseInt($('.todo-count > strong').text());
 					$('.todo-count > strong').text(count + 1);
-					
-					item = "<li data-id=" + data.id + ">" + "<div class='view'><input class='toggle' type='checkbox'>\
-								<label>" + data.todo + "</label><button class='destroy'></button></div></li>";
-					if($('.todo-list').children().length == 0) {
-						$('.todo-list').append(item);
-					} else {
-						$(item).insertBefore($('.todo-list').children().first());
+					if($('#btnCompleted').attr('class') != 'selected') {	
+						item = "<li data-id=" + data.id + ">" + "<div class='view'><input class='toggle' type='checkbox'>\
+									<label>" + data.todo + "</label><button class='destroy'></button></div></li>";
+						if($('.todo-list').children().length == 0) {
+							$('.todo-list').append(item);
+						} else {
+							$(item).insertBefore($('.todo-list').children().first());
+						}
 					}
 					$('.new-todo').val("");
 				}
