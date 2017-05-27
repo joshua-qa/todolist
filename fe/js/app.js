@@ -60,18 +60,22 @@
 	}
 
 	$('#btnAll').click(function() {
+		event.preventDefault();
 		$('.filters > li > a.selected').removeClass();
 		$('#btnAll').attr('class', 'selected');
 		all();
+		
 	});
 
 	$('#btnActive').click(function() {
+		event.preventDefault();
 		$('.filters > li > a.selected').removeClass();
 		$('#btnActive').attr('class', 'selected');
 		filter(0);
 	});
 
 	$('#btnCompleted').click(function() {
+		event.preventDefault();
 		$('.filters > li > a.selected').removeClass();
 		$('#btnCompleted').attr('class', 'selected');
 		filter(1);
